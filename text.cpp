@@ -536,9 +536,23 @@ void write_zchar( int c )
 */
 void write_char( int c )
 {
+    static unsigned char line_count = 0;
+    
     if ( screen_window == TEXT_WINDOW )
     {
-        Serial.write(c);
+         if(c == '\n')
+             line_count = 0;
+         else
+         {
+             line_count++;
+             if(line_count >= 80)
+             {
+                 line_count = 1;
+                 Serial.write('\n');
+             }
+         }
+         
+         Serial.write(c);
     }
 }                               /* write_char */
 

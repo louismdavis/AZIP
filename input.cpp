@@ -139,8 +139,8 @@ void z_sread_aread( int argc, zword_t * argv )
 
    /* Refresh status line */
 
-   if ( h_type < V4 )
-      z_show_status(  );
+   //if ( h_type < V4 )
+   //   z_show_status(  );
 
    /* Read the line then script and record it */
 
