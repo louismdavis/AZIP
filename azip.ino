@@ -25,7 +25,12 @@ SdFat sd;
 void setup()
 {
   Serial.begin(9600);
-
+  
+  Serial.println("Enter any key to start...");
+  
+  while (!Serial.available()) {}
+  Serial.read();
+ 
   if (!sd.init(SPI_FULL_SPEED, chipSelect)) sd.initErrorHalt();
 
   open_story( );
