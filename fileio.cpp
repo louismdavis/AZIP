@@ -39,15 +39,14 @@
   *
   */
   
-#include <SdFat.h>
-#include <SdFatUtil.h>
+#include <SD.h>
 #include "ztypes.h"
 
 /* Static data */
 
 extern int GLOBALVER;
 
-SdFile game;        /* Zcode file pointer */
+File game;        /* Zcode file pointer */
 
 /*
  * open_story
@@ -63,38 +62,38 @@ void open_story( void )
     char memory_name[] = "MEMORY.DAT";
     char game_name[] = "GAME.DAT";
 
-    if ( game.open( memory_name, O_RDWR | O_CREAT ) )
+    if ( game = SD.open( memory_name, FILE_WRITE ) )
     {
-        game.truncate(0);
         game.close();
+        SD.remove( memory_name );
     }
     else
     {
         goto FATAL;
     }
 
-    if ( game.open( game_name, O_RDONLY ) )
+    if ( game = SD.open( game_name, FILE_READ ) )
     {
-        game.seekSet(0);
+        game.seek(0);
         while ( ( count = game.read( stack, sizeof(stack)) ) > 0 )
         {
             game.close();
-            if(!game.open( memory_name, O_RDWR ))
+            if(!(game = SD.open( memory_name, FILE_WRITE )))
                 goto FATAL;
 
-            game.seekEnd();
-            game.write( stack, count);
+            game.seek(game.size());
+            game.write( (const uint8_t*)stack, sizeof(stack));
             game.close();
             
-            if(!game.open( game_name, O_RDONLY ))
+            if(!(game = SD.open( game_name, FILE_READ )))
                 goto FATAL;
 
             pos += count;
-            game.seekSet(pos);
+            game.seek(pos);
         }
 
         game.close();
-        if(!game.open( memory_name, O_RDWR ))
+        if(!(game = SD.open( memory_name, FILE_WRITE )))
             goto FATAL;
 
         return;
@@ -114,12 +113,7 @@ FATAL:
 
 void close_story( void )
 {
-
-    if ( game.isOpen() )
-    {
-        game.close( );
-    }
-
+    game.close( );
 }                               /* close_story */
 
 /*
@@ -133,7 +127,7 @@ void close_story( void )
 unsigned int get_story_size( void )
 {
 
-    return game.fileSize( );
+    return game.size( );
 
 }                               /* get_story_size */
 
@@ -279,7 +273,7 @@ zbyte_t read_code_byte( void )
     zbyte_t value;
 
     /* Seek to start of page */
-    game.seekSet( pc );
+    game.seek( pc );
 
     value = game.read();
 
@@ -328,7 +322,7 @@ zbyte_t read_data_byte( unsigned long *addr )
     zbyte_t value = 0;
 
     /* Seek to start of page */
-    game.seekSet( *addr );
+    game.seek( *addr );
 
     value = game.read();
 
@@ -343,7 +337,7 @@ zbyte_t read_data_byte( unsigned long *addr )
 void write_data_byte( unsigned long *addr, zbyte_t value)
 {
     /* Seek to start of page */
-    game.seekSet( *addr );
+    game.seek( *addr );
 
     game.write( value );
 
