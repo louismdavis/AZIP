@@ -11,16 +11,11 @@
   *
   */
 
-
-#include <SdFat.h>
-#include <SdFatUtil.h>
+#include <SD.h>
 #include "ztypes.h"
 
 // SD chip select pin
 const uint8_t chipSelect = 4;
-
-// file system
-SdFat sd;
 
 void setup()
 {
@@ -31,11 +26,14 @@ void setup()
   while (!Serial.available()) {}
   Serial.read();
  
-  if (!sd.init(SPI_FULL_SPEED, chipSelect)) sd.initErrorHalt();
+  if (!SD.begin(chipSelect))
+  {
+    Serial.println("SD Card Initialisation Failure!");
+    while(1);
+  }
 
   open_story( );
   
-  // put your setup code here, to run once:
   configure( V1, V8 );
 
   initialize_screen(  );
@@ -45,7 +43,6 @@ void setup()
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
-  interpret( );  
+  interpret( );
 }
 

@@ -4,9 +4,6 @@ This version of the Z-code interpreter is derived from Jzip created by John Hold
 More information about Jzip, including the source code can by found here:
 http://jzip.sourceforge.net/
 
-Software Dependencies:
-SDFAT library http://code.google.com/p/sdfatlib/
-
 Hardware Dependencies:
 Formatted SD card
 I am using the SD card interface on the Arduino Ethernet Shield, but you should be able to use any Arduino compatible SD card interface.
@@ -32,5 +29,3 @@ http://www.infocom-if.org/downloads/downloads.html
 Limitations:
 Due to the limits of RAM and FLASH, I removed most of the screen handling capability. 
 I removed the game save and restore capability. I will continue to see if I can add some basic game save/restore capability.
-
-
